@@ -4,6 +4,7 @@
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.files import download, copy
+from conan.tools.system.package_manager import Apt
 import json, os
 
 required_conan_version = ">=2.0"
