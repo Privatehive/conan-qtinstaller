@@ -1,0 +1,10 @@
+sources:
+  "4.8.0":
+    "Windows":
+      url: "https://download.qt.io/official_releases/qt-installer-framework/4.8.0/QtInstallerFramework-windows-x64-4.8.0.exe"
+      sha256: "ed12eb95a999579ecbd3f7efae9a525665b979d245c959d88206a11c3a26a03f"
+      filename: "qtif"
+    "Linux":
+      url: "https://download.qt.io/official_releases/qt-installer-framework/4.8.0/QtInstallerFramework-linux-x64-4.8.0.run"
+      sha256: "dd0aa6f739428a8acc20f2856ae832873bdcf964f252625b8a9f1ebc4b267a1a"
+      filename: "qtif"

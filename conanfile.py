@@ -26,7 +26,7 @@ class QtIFConan(ConanFile):
     url = jsonInfo["repository"]
     # ---Requirements---
     requires = []
-    tool_requires = []
+    tool_requires = ["7zip/[*]@%s/stable" % user]
     # ---Sources---
     exports = ["info.json"]
     exports_sources = []
@@ -39,19 +39,13 @@ class QtIFConan(ConanFile):
     # ---Folders---
     no_copy_source = True
 
-    @property
-    def installer_name(self):
-        if self.settings.os == "Linux":
-            return "QtInstallerFramework-linux-x64-%s.run" % self.version
-        elif self.settings.os == "Windows":
-            return "QtInstallerFramework-windows-x64-%s.exe" % self.version
-
-    @property
-    def installer_cmd(self):
-        if self.settings.os == "Linux":
-            return "./%s" % self.installer_name
-        elif self.settings.os == "Windows":
-            return self.installer_name
+    def validate(self):
+        valid_os = ["Windows", "Linux"]
+        if str(self.settings.os) not in valid_os:
+            raise ConanInvalidConfiguration(f"{self.name} {self.version} is only supported for the following operating systems: {valid_os}")
+        valid_arch = ["x86_64"]
+        if str(self.settings.arch) not in valid_arch:
+            raise ConanInvalidConfiguration(f"{self.name} {self.version} is only supported for the following architectures on {self.settings.os}: {valid_arch}")
 
     def system_requirements(self):
         if self.settings.os == "Linux":
@@ -59,20 +53,9 @@ class QtIFConan(ConanFile):
             pack_names = ["libgl1-mesa-dev", "libfontconfig1-dev", "libfreetype6-dev", "libx11-dev", "libx11-xcb-dev", "libxext-dev", "libxfixes-dev", "libxi-dev", "libxrender-dev", "libxcb1-dev", "libxcb-cursor-dev", "libxcb-glx0-dev", "libxcb-keysyms1-dev", "libxcb-image0-dev", "libxcb-shm0-dev", "libxcb-icccm4-dev", "libxcb-sync-dev", "libxcb-xfixes0-dev", "libxcb-shape0-dev", "libxcb-randr0-dev", "libxcb-render-util0-dev", "libxcb-util-dev", "libxcb-xinerama0-dev", "libxcb-xkb-dev", "libxkbcommon-dev", "libxkbcommon-x11-dev"]
             apt.install(pack_names, update=True)
 
-    def validate(self):
-        valid_os = ["Windows", "Linux"]
-        if str(self.settings.os) not in valid_os:
-            raise ConanInvalidConfiguration(f"Qt Installer Framework {self.version} is only supported for the following operating systems: {valid_os}")
-        valid_arch = ["x86_64"]
-        if str(self.settings.arch) not in valid_arch:
-            raise ConanInvalidConfiguration(f"Qt Installer Framework {self.version} is only supported for the following architectures on {self.settings.os}: {valid_arch}")
-
     def build(self):
-        source_url = "https://download.qt.io/official_releases/qt-installer-framework/%s/%s" % (self.version, self.installer_name)
-        download(self, source_url, filename=self.installer_name)
-        if self.settings.os == "Linux":
-            self.run("chmod +x " + self.installer_name)
-        self.run("%s in --al -c --cp %s -t %s" % (self.installer_cmd, self.build_folder , self.package_folder))
+        download(self, **self.conan_data["sources"][self.version][str(self.settings.os)])
+        self.run("7z x -t#:a -y qtif -o%s" % self.package_folder)
 
     def package_info(self):
         self.output.info('Prepending to PATH environment variable: %s' % self.package_folder)
