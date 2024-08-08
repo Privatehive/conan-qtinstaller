@@ -3,7 +3,7 @@
 
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
-from conan.tools.files import download, copy
+from conan.tools.files import download
 from conan.tools.system.package_manager import Apt
 import json, os
 
