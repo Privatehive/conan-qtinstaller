@@ -6,14 +6,16 @@ jobs:
     name: "Linux"
     uses: Privatehive/conan-workflows/.github/workflows/createPackage.yml@master
     with:
-      image: "ghcr.io/privatehive/conan-ubuntu:latest"
+      name: "x86_64"
+      image: "ubuntu-22.04"
       conan_remotes: https://conan.privatehive.de/artifactory/api/conan/public-conan
 
   build_windows:
     name: "Windows"
     uses: Privatehive/conan-workflows/.github/workflows/createPackage.yml@master
     with:
-      image: "ghcr.io/privatehive/conan-wine:latest"
+      name: "x86_64"
+      image: "windows-2022"
       conan_remotes: https://conan.privatehive.de/artifactory/api/conan/public-conan
 
   upload_recipe:
